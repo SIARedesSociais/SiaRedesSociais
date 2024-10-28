@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QUIZ DA SIA - Teste seus conhecimentos em IA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f9;
+    }
+    .container {
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      padding: 20px;
+      border-radius: 8px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    button, input[type="submit"] {
+      padding: 10px 20px;
+      margin: 10px 0;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .hidden { display: none; }
+    label { display: block; margin: 10px 0 5px; }
+  </style>
+</head>
+<body>
+
+<div class="container" id="quiz-container">
+  <div id="home">
+    <h1>QUIZ DA SIA</h1>
+    <p>Teste seus conhecimentos em IA!</p>
+    <button onclick="startGame()">INICIAR</button>
+  </div>
+
+  <div id="player-info" class="hidden">
+    <h2>Informe seus dados</h2>
+    <form onsubmit="savePlayerInfo(event)">
+      <label>Nome: <input type="text" id="player-name" required></label>
+      <label>Telefone: <input type="text" id="player-phone" required></label>
+      <label>Email: <input type="email" id="player-email" required></label>
+      <label><input type="checkbox" id="lgpd-check" required> Eu concordo com a LGPD</label>
+      <input type="submit" value="Continuar">
+    </form>
+  </div>
+
+  <div id="question-page" class="hidden">
+    <h2 id="question-text"></h2>
+    <button onclick="answerQuestion(true)">SIM</button>
+    <button onclick="answerQuestion(false)">NÃO</button>
+  </div>
+
+  <div id="result-page" class="hidden">
+    <h2>Resultado</h2>
+    <p id="result-text"></p>
+    <p>Obrigado por participar! Siga a SIA nas redes sociais!</p>
+    <p>
+      <a href="https://www.instagram.com/sia.piaui/" target="_blank">
+        <img src="https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=https://www.instagram.com/sia.piaui/" alt="QR Code">
+      </a>
+    </p>
+    <button onclick="restartGame()">Reiniciar</button>
+  </div>
+</div>
+
+<script>
+  let questions = [
+    { text: "Inteligência Artificial pode ser aplicada na automação industrial?", answer: true },
+    { text: "IA é o mesmo que economia digital?", answer: false },
+    { text: "Chatbots são um exemplo de IA?", answer: true },
+    { text: "Redes neurais são inspiradas no cérebro humano?", answer: true },
+    { text: "Toda IA é autônoma e independente?", answer: false }
+  ];
+  let shuffledQuestions = [];
+  let currentQuestionIndex = 0;
+  let score = 0;
+
+  function startGame() {
+    document.getElementById('home').classList.add('hidden');
+    document.getElementById('player-info').classList.remove('hidden');
+  }
+
+  function savePlayerInfo(event) {
+    event.preventDefault();
+    document.getElementById('player-info').classList.add('hidden');
+    shuffledQuestions = questions.sort(() => Math.random() - 0.5);
+    currentQuestionIndex = 0;
+    score = 0;
+    showQuestion();
+  }
+
+  function showQuestion() {
+    if (currentQuestionIndex < shuffledQuestions.length) {
+      document.getElementById('question-page').classList.remove('hidden');
+      document.getElementById('question-text').innerText = shuffledQuestions[currentQuestionIndex].text;
+    } else {
+      showResult();
+    }
+  }
+
+  function answerQuestion(playerAnswer) {
+    if (playerAnswer === shuffledQuestions[currentQuestionIndex].answer) {
+      score++;
+    }
+    currentQuestionIndex++;
+    showQuestion();
+  }
+
+  function showResult() {
+    document.getElementById('question-page').classList.add('hidden');
+    document.getElementById('result-page').classList.remove('hidden');
+    
+    let resultMessage;
+    switch (score) {
+      case 5: resultMessage = "5/5 - Parabéns, você é um expert em IA!"; break;
+      case 4: resultMessage = "4/5 - Quase perfeito! Você sabe muito sobre IA!"; break;
+      case 3: resultMessage = "3/5 - Você se saiu bem!"; break;
+      case 2: resultMessage = "2/5 - Você sabe de algo, mas pode melhorar!"; break;
+      case 1: resultMessage = "1/5 - Precisa conhecer um pouco mais!"; break;
+      default: resultMessage = "0/5 - Pane no sistema alguém me desconfigurou!";
+    }
+    document.getElementById('result-text').innerText = resultMessage;
+  }
+
+  function restartGame() {
+    document.getElementById('result-page').classList.add('hidden');
+    document.getElementById('home').classList.remove('hidden');
+  }
+</script>
+
+</body>
+</html>
